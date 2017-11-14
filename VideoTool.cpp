@@ -1,33 +1,32 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+//#include <opencv2\highgui.h>
+#include "opencv2/highgui/highgui.hpp"
+//#include <opencv2\cv.h>
+#include "opencv2/opencv.hpp"
 
-#include <ctime>
+/*#include <ctime>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
-#include <thread>
+//#include <thread>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
 #include <sys/types.h>
-#include <unistd.h>
-
-//#include <opencv2\highgui.h>
-#include "opencv2/highgui/highgui.hpp"
-//#include <opencv2\cv.h>
-#include "opencv2/opencv.hpp"
+#include <unistd.h>*/
 
 using namespace std;
 using namespace cv;
 //initial min and max HSV filter values.
 //these will be changed using trackbars
 int H_MIN = 0;
-int H_MAX = 256;
-int S_MIN = 0;
-int S_MAX = 256;
-int V_MIN = 0;
+int H_MAX = 48;
+int S_MIN = 88;
+int S_MAX = 166;
+int V_MIN = 252;
 int V_MAX = 256;
 //default capture width and height
 const int FRAME_WIDTH = 640;
@@ -62,6 +61,7 @@ void on_trackbar(int, void*)
 }
 
 string intToString(int number) {
+
 
 	std::stringstream ss;
 	ss << number;
@@ -190,7 +190,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed) {
 		else putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
 	}
 }
-
+/*
 void error(const char *msg)
 {
     perror(msg);
@@ -244,12 +244,12 @@ void socket(char moves[])
          }
     close(sockfd);
 }
+*/
 
 int main(int argc, char* argv[])
 {
 
-
-/*	//some boolean variables for different functionality within this
+	//some boolean variables for different functionality within this
 	//program
 	bool trackObjects = true;
 	bool useMorphOps = true;
@@ -260,12 +260,12 @@ int main(int argc, char* argv[])
 	//matrix storage for HSV image
 	Mat HSV;
 	//matrix storage for binary threshold image
-	Mat us;
-	Mat them;
+	Mat threshold;
+  Mat threshold2;
 	//x and y values for the location of the object
 	int x = 0, y = 0;
 	//create slider bars for HSV filtering
-	//createTrackbars();
+	createTrackbars();
 	//video capture object to acquire webcam feed
 	VideoCapture capture;
 	//open capture object at location zero (default location for webcam)
@@ -276,70 +276,52 @@ int main(int argc, char* argv[])
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
 
-	//FPS
-	int frameCounter = 0;
-	int tick = 0;
-  int fps;
-  std::time_t timeBegin = std::time(0);
 
 
+	
 	while (1) {
 
-		frameCounter++;
-    std::time_t timeNow = std::time(0) - timeBegin;
-
-		if (timeNow - tick >= 1)
-    {
-        tick++;
-        fps = frameCounter;
-        frameCounter = 0;
-    }
 
 		//store image to matrix
 		capture.read(cameraFeed);
 		//convert frame from BGR to HSV colorspace
 		cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-
-		cv::putText(cameraFeed, cv::format("Average FPS=%d", fps ), cv::Point(30, 30), cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0,255,255));
-
 		//filter HSV image between values and store filtered image to
 		//threshold matrix
-
-		//std::thread t1(inRange, HSV, Scalar(156, 103, 0), Scalar(220, 256, 256), us);
-		//std::thread t2(inRange, HSV, Scalar(17, 17, 195), Scalar(78, 256, 256), them);
-
-		//t1.join();
-		//t2.join();
-
-		inRange(HSV, Scalar(156, 103, 0), Scalar(220, 256, 256), us);
-		inRange(HSV, Scalar(17, 17, 195), Scalar(78, 256, 256), them);
+		inRange(HSV, Scalar(H_MIN, S_MIN, V_MIN), Scalar(H_MAX, S_MAX, V_MAX), threshold);
 		//perform morphological operations on thresholded image to eliminate noise
 		//and emphasize the filtered object(s)
-		if (useMorphOps)
-		{
-			morphOps(us);
-			morphOps(them);
-		}
+   
+   int H_MIN = 141;
+   int H_MAX = 188;
+   int S_MIN = 65;
+   int S_MAX = 120;
+   int V_MIN = 89;
+   int V_MAX = 256;
+   
+   inRange(HSV, Scalar(H_MIN, S_MIN, V_MIN), Scalar(H_MAX, S_MAX, V_MAX), threshold2);
+   
+   
+		if (useMorphOps) {
+			morphOps(threshold);
+      morphOps(threshold2);}
 		//pass in thresholded frame to our object tracking function
 		//this function will return the x and y coordinates of the
 		//filtered object
 		if (trackObjects)
-		{
-			trackFilteredObject(x, y, us, cameraFeed);
-			trackFilteredObject(x, y, them, cameraFeed);
-		}
-
+			trackFilteredObject(x, y, threshold, cameraFeed);
+      trackFilteredObject(x, y, threshold2, cameraFeed);
 		//show frames
-		//imshow(windowName2, threshold);
+		imshow(windowName2, threshold);
 		imshow(windowName, cameraFeed);
 		//imshow(windowName1, HSV);
 		setMouseCallback("Original Image", on_mouse, &p);
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command
-		waitKey(1);
-	}*/
-   char moves[] = {"fblrs"};
-   socket(moves);
+		waitKey(30);
+	}
+  /* char moves[] = {"fblrs"};
+   socket(moves);*/
 
 	return 0;
 }
