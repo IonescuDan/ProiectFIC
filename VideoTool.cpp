@@ -263,7 +263,8 @@ int main(int argc, char* argv[])
 	Mat threshold;
   Mat threshold2;
 	//x and y values for the location of the object
-	int x = 0, y = 0;
+	int x1 = 0, y1 = 0;
+ int x2 = 0, y2 = 0;
 	//create slider bars for HSV filtering
 	createTrackbars();
 	//video capture object to acquire webcam feed
@@ -309,8 +310,8 @@ int main(int argc, char* argv[])
 		//this function will return the x and y coordinates of the
 		//filtered object
 		if (trackObjects)
-			trackFilteredObject(x, y, threshold, cameraFeed);
-      trackFilteredObject(x, y, threshold2, cameraFeed);
+			trackFilteredObject(x1, y1, threshold, cameraFeed);
+      trackFilteredObject(x2, y2, threshold2, cameraFeed);
 		//show frames
 		imshow(windowName2, threshold);
 		imshow(windowName, cameraFeed);
