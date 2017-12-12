@@ -6,7 +6,7 @@
 //#include <opencv2\cv.h>
 #include "opencv2/opencv.hpp"
 
-/*#include <ctime>
+#include <ctime>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
@@ -16,7 +16,8 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 #include <sys/types.h>
-#include <unistd.h>*/
+#include <unistd.h>
+#include <math.h>
 
 using namespace std;
 using namespace cv;
@@ -28,6 +29,7 @@ int S_MIN = 88;
 int S_MAX = 166;
 int V_MIN = 252;
 int V_MAX = 256;
+
 //default capture width and height
 const int FRAME_WIDTH = 640;
 const int FRAME_HEIGHT = 480;
@@ -190,7 +192,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed) {
 		else putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
 	}
 }
-/*
+
 void error(const char *msg)
 {
     perror(msg);
@@ -244,11 +246,11 @@ void socket(char moves[])
          }
     close(sockfd);
 }
-*/
+
 
 int main(int argc, char* argv[])
 {
-
+  
 	//some boolean variables for different functionality within this
 	//program
 	bool trackObjects = true;
@@ -321,8 +323,8 @@ int main(int argc, char* argv[])
 		//image will not appear without this waitKey() command
 		waitKey(30);
 	}
-  /* char moves[] = {"fblrs"};
-   socket(moves);*/
+   char moves[] = {"fblrs"};
+   socket(moves);
 
 	return 0;
 }

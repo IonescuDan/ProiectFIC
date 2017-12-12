@@ -17,6 +17,8 @@ opencv2/highgui/highgui.hpp
 /home/cloud/Ionescu-Krisan/ProiectFIC/opencv2/highgui/highgui.hpp
 opencv2/opencv.hpp
 /home/cloud/Ionescu-Krisan/ProiectFIC/opencv2/opencv.hpp
+ctime
+-
 opencv2/imgproc.hpp
 -
 opencv2/highgui.hpp
@@ -30,6 +32,8 @@ netdb.h
 sys/types.h
 -
 unistd.h
+-
+math.h
 -
 
 /usr/local/include/opencv/cxcore.h
